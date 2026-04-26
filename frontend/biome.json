@@ -1,0 +1,62 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
+    "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+    "formatter": {
+        "enabled": true,
+        "includes": ["**"],
+        "useEditorconfig": true,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 80
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "a11y": "info",
+            "correctness": {
+                "noUndeclaredVariables": "error",
+                "noUnusedLabels": "error",
+                "noUnusedVariables": "error",
+                "useExhaustiveDependencies": "off",
+                "useHookAtTopLevel": "error",
+                "useJsxKeyInIterable": "error"
+            },
+            "style": {
+                "useConsistentArrayType": "warn",
+                "useTemplate": "info"
+            },
+            "suspicious": {
+                "noCatchAssign": "error",
+                "noConsole": {
+                    "level": "warn",
+                    "options": { "allow": ["error"] }
+                },
+                "noEmptyBlockStatements": "error",
+                "noMisplacedAssertion": "warn",
+                "noPrototypeBuiltins": "error",
+                "noUnsafeNegation": "error"
+            }
+        },
+        "includes": ["**/src/**"]
+    },
+    "javascript": {
+        "formatter": {
+            "trailingCommas": "es5",
+            "arrowParentheses": "asNeeded"
+        },
+        "globals": ["React", "JSX"]
+    },
+    "assist": {
+        "actions": {
+            "source": {
+                "organizeImports": {
+                    "level": "on",
+                    "options": {
+                        "groups": ["react", { "type": false }]
+                    }
+                }
+            }
+        }
+    }
+}

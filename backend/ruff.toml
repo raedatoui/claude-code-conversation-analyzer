@@ -1,0 +1,24 @@
+line-length = 200
+exclude = [
+  ".eggs",
+  ".git",
+  ".hg",
+  ".mypy_cache",
+  ".tox",
+  ".venv",
+  "env",
+  "_build",
+  "buck-out",
+  "build",
+  "dist"
+]
+
+[lint]
+ignore = ["D413", "D401", "E722", "E711", "E203", "A003"]
+select = ["E", "I", "F"]
+
+[lint.isort]
+combine-as-imports = true
+
+[format]
+quote-style = "single"

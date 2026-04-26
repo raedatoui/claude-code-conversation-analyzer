@@ -1,0 +1,29 @@
+# Byte-compiled
+__pycache__/
+*.py[cod]
+
+# Build artifacts (hatchling)
+build/
+dist/
+*.egg-info/
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.pytest_cache/
+
+# Environments
+.env
+.venv/
+
+# mypy / ruff
+.mypy_cache/
+.ruff_cache/
+
+# uv
+uv.lock
+
+# User-specific configuration
+.cclog-config

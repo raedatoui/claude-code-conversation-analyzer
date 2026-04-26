@@ -1,0 +1,34 @@
+[project]
+name = "conversation-rating-analyzer"
+version = "0.1.0"
+description = "A collection of tools for analyzing conversation ratings and Claude Code usage"
+authors = [
+    {name = "Raed Atoui", email = "ratoui@sonymusic-pde.com"}
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.14",
+    "mypy>=1.8.0",
+    "vulture"
+]
+
+[project.scripts]
+claude-code-ratings = "src.app:main"
+claude-code-analysis = "src.app:run_analysis"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+ignore_missing_imports = true
+warn_return_any = true
+warn_unused_configs = true
