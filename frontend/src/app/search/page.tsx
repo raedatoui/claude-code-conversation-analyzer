@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
@@ -28,7 +28,7 @@ interface SearchResponse {
     error?: string;
 }
 
-export default function SearchPage() {
+function SearchContent() {
     const router = useRouter();
     const params = useSearchParams();
     const urlQ = params.get("q") ?? "";
@@ -187,5 +187,14 @@ export default function SearchPage() {
                 )}
             </main>
         </div>
+    );
+}
+
+// useSearchParams() needs a Suspense boundary for the page to prerender
+export default function SearchPage() {
+    return (
+        <Suspense>
+            <SearchContent />
+        </Suspense>
     );
 }
