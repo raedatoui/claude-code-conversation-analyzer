@@ -153,14 +153,36 @@ def analyze_cache_read_abuse(messages: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def analyze_compaction_events(messages: list[dict[str, Any]]) -> dict[str, Any]:
-    """Analyze cache token progression to detect compaction events."""
+    """Analyze main-thread token progression and compaction events.
+
+    Compactions are the compact_boundary entries Claude Code writes to the transcript;
+    their before/after values are the context sizes recorded on the boundary.
+    Subagent (sidechain) messages are skipped because they run in their own context.
+    """
     token_progression = []
     compaction_events = []
-    prev_cache_read = 0
+    pending_token_drop: int | None = None
     message_index = 0
 
     for msg in messages:
-        if msg.get('type') == 'assistant':
+        if msg.get('isSidechain'):
+            continue
+
+        if msg.get('type') == 'system' and msg.get('subtype') == 'compact_boundary':
+            metadata = msg.get('compactMetadata') or {}
+            tokens_before = int(metadata.get('preTokens') or 0)
+            tokens_after = int(metadata.get('postTokens') or 0)
+            pending_token_drop = tokens_before - tokens_after
+            compaction_events.append(
+                {
+                    'message_index': message_index,
+                    'timestamp': msg.get('timestamp', ''),
+                    'cache_read_before': tokens_before,
+                    'cache_read_after': tokens_after,
+                    'token_drop': pending_token_drop,
+                }
+            )
+        elif msg.get('type') == 'assistant':
             usage = msg.get('message', {}).get('usage', {})
             if not usage:
                 usage = msg.get('usage', {})
@@ -171,19 +193,7 @@ def analyze_compaction_events(messages: list[dict[str, Any]]) -> dict[str, Any]:
             output_tokens = int(usage.get('output_tokens', 0) or 0)
             timestamp = msg.get('timestamp', '')
 
-            token_drop = prev_cache_read - cache_read
-            is_compaction = token_drop > 10_000
-
-            if is_compaction:
-                compaction_events.append(
-                    {
-                        'message_index': message_index,
-                        'timestamp': timestamp,
-                        'cache_read_before': prev_cache_read,
-                        'cache_read_after': cache_read,
-                        'token_drop': token_drop,
-                    }
-                )
+            is_compaction = pending_token_drop is not None
 
             token_progression.append(
                 {
@@ -195,11 +205,11 @@ def analyze_compaction_events(messages: list[dict[str, Any]]) -> dict[str, Any]:
                     'output_tokens': output_tokens,
                     'total_tokens': input_tokens + output_tokens,
                     'is_compaction_event': is_compaction,
-                    'token_drop': token_drop if is_compaction else 0,
+                    'token_drop': pending_token_drop or 0,
                 }
             )
 
-            prev_cache_read = cache_read
+            pending_token_drop = None
             message_index += 1
 
     compaction_count = len(compaction_events)

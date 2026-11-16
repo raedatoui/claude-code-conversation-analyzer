@@ -147,8 +147,14 @@ class CCLogDBReader:
                 'sessionId': session_id,
                 'requestId': msg.get('_request_id'),
                 'isMeta': bool(msg.get('_is_meta')),
+                'isSidechain': bool(msg.get('_is_sidechain')),
                 'parentUuid': msg.get('_parent_uuid'),
             }
+
+            if msg_type == 'system':
+                # Compaction boundaries are identified by subtype (see analyze_compaction_events)
+                formatted_msg['subtype'] = content.get('subtype')
+                formatted_msg['compactMetadata'] = content.get('compactMetadata')
 
             if msg_type == 'assistant':
                 # Analyzer functions expect usage nested under message.usage

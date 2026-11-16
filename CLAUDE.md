@@ -119,7 +119,7 @@ uv run python -m src.app \
 
 4. **Analyzer** (`analyzer.py`) — Core quality analysis engine
    - Analyzes conversation quality (cache usage, length, query specificity)
-   - Detects compaction events (cache drops >10k tokens)
+   - Detects compaction events (`compact_boundary` transcript entries, main thread only)
 
 5. **DBAugmenter** (`db_augmenter.py`) — Writes computed cost and quality metrics back to the SQLite DB (`session_costs`, `session_quality` tables)
 
