@@ -1,7 +1,7 @@
 "use client";
 
 import type { Project } from "@/lib/types";
-import { formatCost, formatTokens } from "@/lib/utils";
+import { formatCost, formatDate, formatTokens } from "@/lib/utils";
 
 interface SummaryCardsProps {
     projects: Project[];
@@ -37,6 +37,14 @@ export default function SummaryCards({ projects }: SummaryCardsProps) {
             ),
         0
     );
+    const periodStart = projects.reduce<string | null>((min, p) => {
+        const start = p.metrics.date_range_start;
+        return start && (!min || start < min) ? start : min;
+    }, null);
+    const periodEnd = projects.reduce<string | null>((max, p) => {
+        const end = p.metrics.date_range_end;
+        return end && (!max || end > max) ? end : max;
+    }, null);
 
     const cards: CardData[] = [
         {
@@ -61,23 +69,31 @@ export default function SummaryCards({ projects }: SummaryCardsProps) {
     ];
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {cards.map(card => (
-                <div
-                    key={card.label}
-                    className="bg-surface border border-border rounded-lg p-5"
-                >
-                    <p className="text-xs font-medium text-text-secondary uppercase tracking-wider mb-2">
-                        {card.label}
-                    </p>
-                    <p className="text-3xl font-bold">{card.value}</p>
-                    {card.subtext && (
-                        <p className="text-sm text-text-secondary mt-1">
-                            {card.subtext}
+        <div className="space-y-2">
+            {periodStart && periodEnd && (
+                <p className="text-sm text-text-secondary">
+                    Sessions from {formatDate(periodStart)} to{" "}
+                    {formatDate(periodEnd)}
+                </p>
+            )}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {cards.map(card => (
+                    <div
+                        key={card.label}
+                        className="bg-surface border border-border rounded-lg p-5"
+                    >
+                        <p className="text-xs font-medium text-text-secondary uppercase tracking-wider mb-2">
+                            {card.label}
                         </p>
-                    )}
-                </div>
-            ))}
+                        <p className="text-3xl font-bold">{card.value}</p>
+                        {card.subtext && (
+                            <p className="text-sm text-text-secondary mt-1">
+                                {card.subtext}
+                            </p>
+                        )}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
