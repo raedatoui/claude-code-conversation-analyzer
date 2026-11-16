@@ -7,7 +7,45 @@ Source: https://platform.claude.com/docs/en/about-claude/pricing#model-pricing
 
 # Using 5m cache prices as default since JSONL doesn't distinguish cache expiry
 PRICING: dict[str, dict[str, float | bool]] = {
+    # Claude Fable 5.x
+    'claude-fable-5-2': {
+        'input': 8.00,
+        'cache_write': 10.00,
+        'cache_read': 0.20,
+        'output': 40.00,
+    },
+    'claude-fable-5-1': {
+        'input': 10.00,
+        'cache_write': 12.50,
+        'cache_read': 0.25,
+        'output': 50.00,
+    },
+    'claude-fable-5': {
+        'input': 10.00,
+        'cache_write': 12.50,
+        'cache_read': 1.00,
+        'output': 50.00,
+    },
+    # Claude Opus 5.x
+    'claude-opus-5-5': {
+        'input': 4.00,
+        'cache_write': 5.00,
+        'cache_read': 0.20,
+        'output': 20.00,
+    },
+    'claude-opus-5': {
+        'input': 5.00,
+        'cache_write': 6.25,
+        'cache_read': 0.50,
+        'output': 25.00,
+    },
     # Claude Opus 4.x
+    'claude-opus-4-8': {
+        'input': 5.00,
+        'cache_write': 6.25,
+        'cache_read': 0.50,
+        'output': 25.00,
+    },
     'claude-opus-4-7': {
         'input': 5.00,
         'cache_write': 6.25,
@@ -49,6 +87,19 @@ PRICING: dict[str, dict[str, float | bool]] = {
         'cache_write': 18.75,
         'cache_read': 1.50,
         'output': 75.00,
+    },
+    # Claude Sonnet 5.x
+    'claude-sonnet-5-5': {
+        'input': 2.00,
+        'cache_write': 2.50,
+        'cache_read': 0.10,
+        'output': 10.00,
+    },
+    'claude-sonnet-5': {
+        'input': 2.00,
+        'cache_write': 2.50,
+        'cache_read': 0.20,
+        'output': 10.00,
     },
     # Claude Sonnet 4.x
     'claude-sonnet-4-6': {
@@ -93,6 +144,15 @@ PRICING: dict[str, dict[str, float | bool]] = {
         'cache_read': 0.30,
         'output': 15.00,
         'deprecated': True,
+    },
+    # Claude Haiku 5.x
+    # Rates for prompts up to 100K tokens. Requests with longer prompts are billed at 5x these
+    # rates (0.50 / 0.625 / 0.05 / 2.50), which this flat table does not model.
+    'claude-haiku-5-5': {
+        'input': 0.10,
+        'cache_write': 0.125,
+        'cache_read': 0.01,
+        'output': 0.50,
     },
     # Claude Haiku 4.x and 3.x
     'claude-haiku-4-5': {
